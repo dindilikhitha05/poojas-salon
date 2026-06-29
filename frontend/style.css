@@ -133,6 +133,12 @@ a {
     transform: translateY(-1px);
 }
 
+/* Scroll offset for sticky nav (accounts for ~70px header height) */
+#section-book,
+#section-dashboard {
+    scroll-margin-top: 70px;
+}
+
 /* ==========================================
    HERO SECTION
    ========================================== */
@@ -518,6 +524,7 @@ select:focus {
     max-width: 1100px;
     margin: 0 auto;
     padding: 80px 24px;
+    scroll-margin-top: 70px;
 }
 
 .dashboard-section.active {

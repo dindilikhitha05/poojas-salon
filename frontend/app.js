@@ -92,6 +92,17 @@ function switchTab(tabId) {
     document.getElementById('section-book').classList.toggle('active', tabId === 'book');
     document.getElementById('section-dashboard').classList.toggle('active', tabId === 'dashboard');
 
+    // Smooth scroll to the top of the newly revealed section
+    const targetSection = document.getElementById(
+        tabId === 'dashboard' ? 'section-dashboard' : 'section-book'
+    );
+    if (targetSection) {
+        // Small delay to allow display toggle before scroll
+        setTimeout(() => {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+    }
+
     if (tabId === 'dashboard') {
         renderDashboard();
     } else {

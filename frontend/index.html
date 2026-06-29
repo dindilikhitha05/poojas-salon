@@ -61,11 +61,19 @@
                 <span id="tab-book" class="nav-item active" onclick="navTo('hero-section'); closeMobileNav()">Home</span>
                 <span class="nav-item" onclick="navTo('services-section'); closeMobileNav()">Services</span>
                 <span class="nav-item" onclick="navTo('about-section'); closeMobileNav()">About Us</span>
-                <span id="tab-dashboard" class="nav-item" onclick="switchTab('dashboard'); closeMobileNav()">Dashboard</span>
-                <span class="nav-item" onclick="navTo('booking-panel'); closeMobileNav()">Prices</span>
-                <button class="btn-book-nav" onclick="navTo('booking-panel'); closeMobileNav()">
-                    <i class="fa-regular fa-calendar-check"></i> Book Appointment
+                <span id="tab-my-bookings" class="nav-item" style="display:none;" onclick="switchTab('my-bookings'); closeMobileNav()">My Bookings</span>
+                <span id="tab-dashboard" class="nav-item" style="display:none;" onclick="switchTab('dashboard'); closeMobileNav()">Dashboard</span>
+                
+                <!-- Auth buttons/state -->
+                <button id="nav-login-btn" class="btn-book-nav" style="background:var(--purple); box-shadow:none; display:flex;" onclick="openAuthModal(); closeMobileNav()">
+                    <i class="fa-solid fa-sign-in-alt" style="margin-top: 3px;"></i> &nbsp;Login / Sign Up
                 </button>
+                <div id="nav-user-area" style="display:none; align-items:center; gap:16px;">
+                    <span id="nav-username" style="font-weight:600; font-size:0.85rem; color:var(--text-dark);"></span>
+                    <button class="btn-book-nav" style="background:#4a5568; box-shadow:none; padding:8px 16px; display:flex;" onclick="handleLogout()">
+                        <i class="fa-solid fa-sign-out-alt" style="margin-top: 3px;"></i> &nbsp;Logout
+                    </button>
+                </div>
             </nav>
 
             <!-- Mobile nav overlay backdrop -->
@@ -379,6 +387,101 @@
 
         </div>
     </main><!-- end #section-dashboard -->
+
+
+    <!-- ========== CUSTOMER'S MY BOOKINGS ========== -->
+    <main id="section-my-bookings" class="dashboard-section">
+        <div class="dashboard-inner">
+            <div class="dashboard-header">
+                <div>
+                    <h2>My Appointments</h2>
+                    <p>Track and manage your upcoming salon visits</p>
+                </div>
+                <button class="btn-pink" onclick="switchTab('book'); setTimeout(() => navTo('booking-panel'), 100)">
+                    <i class="fa-regular fa-calendar-plus"></i> Book New Appointment
+                </button>
+            </div>
+
+            <!-- Table of customer bookings -->
+            <div class="table-card" id="my-bookings-table-wrapper" style="display:none;">
+                <div class="table-header">
+                    <h3 style="font-size:1rem; font-weight:700;">My Booking List</h3>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="appointments-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Service</th>
+                                <th>Duration</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="my-bookings-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="my-bookings-empty" class="empty-state">
+                <div style="font-size:2.5rem; color:var(--pink-light); margin-bottom:12px;"><i class="fa-regular fa-calendar-xmark"></i></div>
+                <h4 style="font-size:1.1rem; font-weight:700;">No Bookings Found</h4>
+                <p style="color:var(--text-mid); font-size:0.88rem; margin-top:4px;">You haven't booked any appointments yet.</p>
+            </div>
+        </div>
+    </main>
+
+
+    <!-- ========== AUTHENTICATION MODAL (LOGIN & REGISTER) ========== -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 400px; padding: 36px 30px; position: relative;">
+            <button class="nav-close-btn" style="display:flex; top: 12px; right: 12px;" onclick="closeAuthModal()">&times;</button>
+            
+            <!-- Login Form -->
+            <div id="auth-login-box">
+                <h2 style="font-size:1.6rem; margin-bottom:10px; font-weight:800; color:var(--text-dark);">Welcome Back</h2>
+                <p style="color:var(--text-mid); font-size:0.85rem; margin-bottom:24px;">Login to manage your bookings and secure appointments.</p>
+                <form id="auth-login-form" onsubmit="handleLoginSubmit(event)">
+                    <div class="form-group" style="text-align:left;">
+                        <label for="login-phone">Phone Number</label>
+                        <input type="tel" id="login-phone" placeholder="e.g. 9876543210" required>
+                    </div>
+                    <div class="form-group" style="text-align:left; margin-bottom:24px;">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="••••••" required>
+                    </div>
+                    <button type="submit" class="btn-submit" style="margin-bottom:16px;">
+                        Login <i class="fa-solid fa-sign-in-alt"></i>
+                    </button>
+                    <p style="font-size:0.85rem; color:var(--text-mid);">Don't have an account? <a href="#" style="color:var(--pink); font-weight:600;" onclick="toggleAuthForm('register'); event.preventDefault();">Sign Up</a></p>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="auth-register-box" style="display:none;">
+                <h2 style="font-size:1.6rem; margin-bottom:10px; font-weight:800; color:var(--text-dark);">Create Account</h2>
+                <p style="color:var(--text-mid); font-size:0.85rem; margin-bottom:24px;">Join Pooja's Salon to book and track your hair & beauty appointments.</p>
+                <form id="auth-register-form" onsubmit="handleRegisterSubmit(event)">
+                    <div class="form-group" style="text-align:left;">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" placeholder="Your Name" required minlength="2">
+                    </div>
+                    <div class="form-group" style="text-align:left;">
+                        <label for="register-phone">Phone Number</label>
+                        <input type="tel" id="register-phone" placeholder="e.g. 9876543210" required>
+                    </div>
+                    <div class="form-group" style="text-align:left; margin-bottom:24px;">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" placeholder="Min. 6 characters" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn-submit" style="margin-bottom:16px;">
+                        Sign Up <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                    <p style="font-size:0.85rem; color:var(--text-mid);">Already have an account? <a href="#" style="color:var(--pink); font-weight:600;" onclick="toggleAuthForm('login'); event.preventDefault();">Login</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
     <!-- ========== BOOKING CONFIRMATION MODAL ========== -->

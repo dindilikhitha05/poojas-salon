@@ -13,8 +13,11 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const connectDB = require('./config/db');
 const bookingsRoutes = require('./routes/bookings');
+const authRoutes = require('./routes/auth');
 const errorHandler = require('./middleware/errorHandler');
 const Booking = require('./models/Booking');
+const User = require('./models/User');
+const { hashPassword } = require('./middleware/auth');
 
 // Initialize app
 const app = express();
@@ -23,6 +26,7 @@ const app = express();
 connectDB().then(() => {
   // Check if seeding is needed
   seedDataIfNeeded();
+  seedAdminUser();
 });
 
 // ==========================================
@@ -72,6 +76,7 @@ app.use(express.static(frontendPath));
 // ROUTES
 // ==========================================
 app.use('/api/bookings', bookingsRoutes);
+app.use('/api/auth', authRoutes);
 
 // Root Endpoint (Self Health Check)
 app.get('/health', (req, res) => {
@@ -159,5 +164,29 @@ async function seedDataIfNeeded() {
     }
   } catch (error) {
     console.error('Error seeding demo data:', error.message);
+  }
+}
+
+// Helper Function: Seed default Admin user if none exists
+async function seedAdminUser() {
+  try {
+    const adminCount = await User.countDocuments({ role: 'admin' });
+    if (adminCount === 0) {
+      console.log('No admin users found. Seeding default admin user...');
+      const adminPhone = process.env.ADMIN_PHONE || '9999999999';
+      const adminPassword = process.env.ADMIN_PASSWORD || 'adminpassword';
+      
+      const adminUser = new User({
+        name: 'Pooja (Owner)',
+        phone: adminPhone.trim(),
+        password: hashPassword(adminPassword),
+        role: 'admin'
+      });
+      
+      await adminUser.save();
+      console.log(`Successfully seeded default admin user. Phone: ${adminPhone}, Password: ${adminPassword}`);
+    }
+  } catch (error) {
+    console.error('Error seeding default admin user:', error.message);
   }
 }

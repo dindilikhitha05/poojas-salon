@@ -116,6 +116,7 @@ const createBooking = async (req, res, next) => {
 
     // 2. Insert booking
     const booking = new Booking({
+      customerId: req.user ? req.user.id : null,
       customerName,
       customerPhone,
       serviceId,
@@ -218,11 +219,27 @@ const getStatsRevenue = async (req, res, next) => {
   }
 };
 
+// GET /api/bookings/my-bookings - Get bookings for the logged-in customer
+const getMyBookings = async (req, res, next) => {
+  try {
+    const customerId = req.user.id;
+    const bookings = await Booking.find({ customerId }).sort({ date: -1, startMinutes: 1 });
+    
+    res.status(200).json({
+      success: true,
+      data: bookings
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllBookings,
   getBookingsByDate,
   createBooking,
   deleteBooking,
   getStatsDashboard,
-  getStatsRevenue
+  getStatsRevenue,
+  getMyBookings
 };

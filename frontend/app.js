@@ -24,12 +24,19 @@ let bookings = [];
 // Selected time slot state
 let selectedSlotMinutes = null;
 
+// Authentication State
+let currentUser = null;
+
 // ==========================================
 // INITIALIZATION
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     initializeDates();
-    loadBookings();
+    checkLoginState().then(() => {
+        if (currentUser && currentUser.role === 'admin') {
+            loadBookings();
+        }
+    });
     
     // Set default view
     switchTab('book');
@@ -67,15 +74,15 @@ function formatDateLocal(date) {
 // ==========================================
 async function loadBookings() {
     try {
-        const password = sessionStorage.getItem('ownerPassword') || '';
+        const token = localStorage.getItem('token') || '';
         const response = await fetch(`${API_BASE_URL}/api/bookings`, {
             headers: {
-                'Authorization': `Bearer ${password}`
+                'Authorization': `Bearer ${token}`
             }
         });
         if (response.status === 401) {
-            sessionStorage.removeItem('ownerPassword');
-            alert('Incorrect Owner Password. Access Denied.');
+            handleLogoutQuietly();
+            alert('Session expired or admin access denied.');
             switchTab('book');
             return;
         }
@@ -119,32 +126,32 @@ function navTo(sectionId) {
 
 function switchTab(tabId) {
     if (tabId === 'dashboard') {
-        const savedPassword = sessionStorage.getItem('ownerPassword');
-        if (!savedPassword) {
-            const password = prompt('Enter Owner Password:');
-            if (password === null) {
-                // User cancelled, keep them on current tab
-                return;
-            }
-            if (!password.trim()) {
-                alert('Password cannot be empty.');
-                return;
-            }
-            sessionStorage.setItem('ownerPassword', password);
+        if (!currentUser || currentUser.role !== 'admin') {
+            alert('Access denied. Admin authorization required.');
+            return;
+        }
+    }
+    if (tabId === 'my-bookings') {
+        if (!currentUser) {
+            alert('Please login to view your appointments.');
+            openAuthModal();
+            return;
         }
     }
 
     // Toggle Active Tab Buttons
     document.getElementById('tab-book').classList.toggle('active', tabId === 'book');
     document.getElementById('tab-dashboard').classList.toggle('active', tabId === 'dashboard');
+    document.getElementById('tab-my-bookings').classList.toggle('active', tabId === 'my-bookings');
 
     // Toggle Active Sections
     document.getElementById('section-book').classList.toggle('active', tabId === 'book');
     document.getElementById('section-dashboard').classList.toggle('active', tabId === 'dashboard');
+    document.getElementById('section-my-bookings').classList.toggle('active', tabId === 'my-bookings');
 
     // Smooth scroll to the top of the newly revealed section
     const targetSection = document.getElementById(
-        tabId === 'dashboard' ? 'section-dashboard' : 'section-book'
+        tabId === 'dashboard' ? 'section-dashboard' : (tabId === 'my-bookings' ? 'section-my-bookings' : 'section-book')
     );
     if (targetSection) {
         // Small delay to allow display toggle before scroll
@@ -155,6 +162,8 @@ function switchTab(tabId) {
 
     if (tabId === 'dashboard') {
         renderDashboard();
+    } else if (tabId === 'my-bookings') {
+        loadMyBookings();
     } else {
         onServiceOrDateChange();
     }
@@ -200,10 +209,10 @@ async function onServiceOrDateChange() {
     // Fetch existing bookings for this date from the database
     let dayBookings = [];
     try {
-        const password = sessionStorage.getItem('ownerPassword') || '';
+        const token = localStorage.getItem('token') || '';
         const headers = {};
-        if (password) {
-            headers['Authorization'] = `Bearer ${password}`;
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
         }
         const response = await fetch(`${API_BASE_URL}/api/bookings/date/${date}`, { headers });
         const result = await response.json();
@@ -314,6 +323,12 @@ function minutesToTimeString(minutes) {
 // ==========================================
 async function handleFormSubmit(event) {
     event.preventDefault();
+    
+    if (!currentUser) {
+        alert('Please login or register to book an appointment.');
+        openAuthModal();
+        return;
+    }
     
     const serviceId = document.getElementById('service-select').value;
     const date = document.getElementById('booking-date').value;
@@ -437,15 +452,15 @@ async function renderDashboard() {
     // Fetch daily bookings from the backend
     let dayBookings = [];
     try {
-        const password = sessionStorage.getItem('ownerPassword') || '';
+        const token = localStorage.getItem('token') || '';
         const response = await fetch(`${API_BASE_URL}/api/bookings/date/${filterDate}`, {
             headers: {
-                'Authorization': `Bearer ${password}`
+                'Authorization': `Bearer ${token}`
             }
         });
         if (response.status === 401) {
-            sessionStorage.removeItem('ownerPassword');
-            alert('Incorrect Owner Password. Access Denied.');
+            handleLogoutQuietly();
+            alert('Session expired or admin access denied.');
             switchTab('book');
             return;
         }
@@ -523,16 +538,16 @@ async function cancelAppointment(id) {
     const confirmCancel = confirm(`Are you sure you want to cancel the appointment for ${name}?`);
     if (confirmCancel) {
         try {
-            const password = sessionStorage.getItem('ownerPassword') || '';
+            const token = localStorage.getItem('token') || '';
             const response = await fetch(`${API_BASE_URL}/api/bookings/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${password}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
             if (response.status === 401) {
-                sessionStorage.removeItem('ownerPassword');
-                alert('Session expired or incorrect password. Access Denied.');
+                handleLogoutQuietly();
+                alert('Session expired or admin access denied.');
                 switchTab('book');
                 return;
             }
@@ -556,4 +571,218 @@ function escapeHtml(str) {
               .replace(/>/g, '&gt;')
               .replace(/"/g, '&quot;')
               .replace(/'/g, '&#039;');
+}
+
+// ==========================================
+// AUTHENTICATION FRONTEND FLOW
+// ==========================================
+async function checkLoginState() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    currentUser = result.user;
+                    updateUIForLoggedInUser();
+                    return;
+                }
+            }
+        } catch (e) {
+            console.error('Error verifying login state:', e);
+        }
+    }
+    handleLogoutQuietly();
+}
+
+function updateUIForLoggedInUser() {
+    document.getElementById('nav-login-btn').style.display = 'none';
+    document.getElementById('nav-user-area').style.display = 'flex';
+    document.getElementById('nav-username').textContent = currentUser.name;
+
+    // Show appropriate tabs based on role
+    if (currentUser.role === 'admin') {
+        document.getElementById('tab-dashboard').style.display = 'inline-block';
+        document.getElementById('tab-my-bookings').style.display = 'none';
+    } else {
+        document.getElementById('tab-dashboard').style.display = 'none';
+        document.getElementById('tab-my-bookings').style.display = 'inline-block';
+    }
+    updateBookingFormPrefills();
+}
+
+function handleLogoutQuietly() {
+    currentUser = null;
+    localStorage.removeItem('token');
+    document.getElementById('nav-login-btn').style.display = 'flex';
+    document.getElementById('nav-user-area').style.display = 'none';
+    document.getElementById('tab-dashboard').style.display = 'none';
+    document.getElementById('tab-my-bookings').style.display = 'none';
+    updateBookingFormPrefills();
+}
+
+function handleLogout() {
+    handleLogoutQuietly();
+    switchTab('book');
+}
+
+function openAuthModal() {
+    document.getElementById('auth-modal').classList.add('visible');
+    toggleAuthForm('login');
+}
+
+function closeAuthModal() {
+    document.getElementById('auth-modal').classList.remove('visible');
+}
+
+function toggleAuthForm(type) {
+    if (type === 'login') {
+        document.getElementById('auth-login-box').style.display = 'block';
+        document.getElementById('auth-register-box').style.display = 'none';
+    } else {
+        document.getElementById('auth-login-box').style.display = 'none';
+        document.getElementById('auth-register-box').style.display = 'block';
+    }
+}
+
+async function handleLoginSubmit(event) {
+    event.preventDefault();
+    const phone = document.getElementById('login-phone').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, password })
+        });
+        const result = await response.json();
+        if (response.ok && result.success) {
+            localStorage.setItem('token', result.token);
+            currentUser = result.user;
+            updateUIForLoggedInUser();
+            closeAuthModal();
+            
+            // Clean inputs
+            document.getElementById('login-phone').value = '';
+            document.getElementById('login-password').value = '';
+
+            // Switch to their view
+            if (currentUser.role === 'admin') {
+                switchTab('dashboard');
+                loadBookings();
+            } else {
+                switchTab('book');
+            }
+        } else {
+            alert(result.message || 'Login failed.');
+        }
+    } catch (e) {
+        console.error('Error logging in:', e);
+        alert('Connection error. Please try again.');
+    }
+}
+
+async function handleRegisterSubmit(event) {
+    event.preventDefault();
+    const name = document.getElementById('register-name').value.trim();
+    const phone = document.getElementById('register-phone').value.trim();
+    const password = document.getElementById('register-password').value;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, phone, password })
+        });
+        const result = await response.json();
+        if (response.ok && result.success) {
+            localStorage.setItem('token', result.token);
+            currentUser = result.user;
+            updateUIForLoggedInUser();
+            closeAuthModal();
+
+            // Clean inputs
+            document.getElementById('register-name').value = '';
+            document.getElementById('register-phone').value = '';
+            document.getElementById('register-password').value = '';
+
+            switchTab('book');
+        } else {
+            alert(result.message || 'Registration failed.');
+        }
+    } catch (e) {
+        console.error('Error registering:', e);
+        alert('Connection error. Please try again.');
+    }
+}
+
+function updateBookingFormPrefills() {
+    if (currentUser && currentUser.role === 'customer') {
+        document.getElementById('customer-name').value = currentUser.name;
+        document.getElementById('customer-phone').value = currentUser.phone;
+        document.getElementById('customer-name').readOnly = true;
+        document.getElementById('customer-phone').readOnly = true;
+    } else {
+        document.getElementById('customer-name').value = '';
+        document.getElementById('customer-phone').value = '';
+        document.getElementById('customer-name').readOnly = false;
+        document.getElementById('customer-phone').readOnly = false;
+    }
+}
+
+async function loadMyBookings() {
+    const tbody = document.getElementById('my-bookings-tbody');
+    const tableWrapper = document.getElementById('my-bookings-table-wrapper');
+    const emptyState = document.getElementById('my-bookings-empty');
+    
+    tbody.innerHTML = '';
+    
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/api/bookings/my-bookings`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const result = await response.json();
+        if (response.ok && result.success) {
+            const myBookings = result.data || [];
+            if (myBookings.length === 0) {
+                tableWrapper.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                tableWrapper.style.display = 'block';
+                emptyState.style.display = 'none';
+                
+                myBookings.forEach(booking => {
+                    const tr = document.createElement('tr');
+                    const timeStr = minutesToTimeString(booking.startMinutes);
+                    const endTimeStr = minutesToTimeString(booking.endMinutes);
+                    
+                    tr.innerHTML = `
+                        <td style="font-weight: 600;">${booking.date}</td>
+                        <td>${timeStr} - ${endTimeStr}</td>
+                        <td><span class="badge" style="background-color: var(--pink-pale); color: var(--pink); border: 1px solid var(--pink-light);">${booking.serviceName}</span></td>
+                        <td>${booking.duration} mins</td>
+                        <td style="font-weight: 600; color: var(--pink);">$${booking.price}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        } else {
+            tableWrapper.style.display = 'none';
+            emptyState.style.display = 'block';
+            console.error('Failed to load customer bookings:', result.message);
+        }
+    } catch (e) {
+        tableWrapper.style.display = 'none';
+        emptyState.style.display = 'block';
+        console.error('Error fetching customer bookings:', e);
+    }
 }

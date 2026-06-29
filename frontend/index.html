@@ -3,239 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Book your beauty and hair care appointments online at Pooja's Salon. A premium ladies' salon offering haircuts, coloring, facials, and more.">
+    <meta name="description" content="Pooja's Salon - Modern, premium ladies' hair and beauty services. Book haircuts, styling, coloring, and threading online.">
     <title>Pooja's Salon - Appointment Booking</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons for premium feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <!-- FontAwesome for clean iconography -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Top Decorative Bar -->
-    <div class="top-bar">
-        <span><i class="fa-solid fa-sparkles"></i> Welcome to Pooja's Salon — Pure Elegance & Indulgence</span>
-    </div>
 
     <!-- Main Navigation Header -->
     <header class="header">
         <div class="header-container">
             <div class="logo-area">
-                <h1>Pooja's Salon</h1>
-                <p class="tagline">Exclusive Ladies' Hair & Beauty Care</p>
+                <a href="#"><h1>Pooja's Salon</h1></a>
             </div>
-            <nav class="nav-tabs">
-                <button id="tab-book" class="tab-btn active" onclick="switchTab('book')">
-                    <i class="fa-regular fa-calendar-plus"></i> Book Appointment
-                </button>
-                <button id="tab-dashboard" class="tab-btn" onclick="switchTab('dashboard')">
-                    <i class="fa-solid fa-chart-line"></i> Pooja's Dashboard
-                </button>
+            <nav class="nav-links">
+                <span id="tab-book" class="nav-item active" onclick="switchTab('book')">Services & Book</span>
+                <span id="tab-dashboard" class="nav-item" onclick="switchTab('dashboard')">Owner's Dashboard</span>
+                <button class="btn-book-nav" onclick="scrollToBooking()">Book Now</button>
             </nav>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="main-content">
-        <!-- BOOKING SECTION -->
-        <section id="section-book" class="content-section active">
-            <div class="booking-grid">
-                <!-- Left Column: Intro & Services Showcase -->
-                <div class="info-card animate-fade-in">
-                    <div class="card-header-rose">
-                        <h2>Our Signature Services</h2>
-                        <p>Pamper yourself with our curated beauty treatments</p>
-                    </div>
-                    <div class="services-list-display">
-                        <div class="service-item-display">
-                            <div class="service-icon"><i class="fa-solid fa-scissors"></i></div>
-                            <div class="service-details">
-                                <h3>Haircut</h3>
-                                <p><i class="fa-regular fa-clock"></i> 45 mins • Elegant styling & wash</p>
-                            </div>
-                            <span class="price-tag">$50</span>
-                        </div>
-                        <div class="service-item-display">
-                            <div class="service-icon"><i class="fa-solid fa-palette"></i></div>
-                            <div class="service-details">
-                                <h3>Hair Coloring</h3>
-                                <p><i class="fa-regular fa-clock"></i> 90 mins • Premium ammonia-free dyes</p>
-                            </div>
-                            <span class="price-tag">$120</span>
-                        </div>
-                        <div class="service-item-display">
-                            <div class="service-icon"><i class="fa-solid fa-eye"></i></div>
-                            <div class="service-details">
-                                <h3>Threading</h3>
-                                <p><i class="fa-regular fa-clock"></i> 15 mins • Eyebrows & Upper Lip shape</p>
-                            </div>
-                            <span class="price-tag">$15</span>
-                        </div>
-                        <div class="service-item-display">
-                            <div class="service-icon"><i class="fa-solid fa-spa"></i></div>
-                            <div class="service-details">
-                                <h3>Facial</h3>
-                                <p><i class="fa-regular fa-clock"></i> 60 mins • Herbal glow & massage</p>
-                            </div>
-                            <span class="price-tag">$80</span>
-                        </div>
-                        <div class="service-item-display">
-                            <div class="service-icon"><i class="fa-solid fa-wind"></i></div>
-                            <div class="service-details">
-                                <h3>Hair Spa</h3>
-                                <p><i class="fa-regular fa-clock"></i> 75 mins • Deep nourishment treatment</p>
-                            </div>
-                            <span class="price-tag">$70</span>
-                        </div>
-                    </div>
+    <!-- MAIN EDITORIAL CONTENT -->
+    <main id="section-book" class="content-section active">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-image-container">
+                <img src="hero_model.png" alt="Stunning Hair Styling Model" class="hero-img">
+            </div>
+            <div class="hero-content">
+                <h2>POV: You Finally Found Your <em class="serif-italic">Hair</em> <em class="serif-italic">Girl</em>.</h2>
+                <p>Blondes, brunettes, extensions, blowouts — we're here for glossy, healthy, "who did your hair?" energy.</p>
+                <button class="btn-pill-action" onclick="scrollToBooking()">Book Appointment <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <!-- Scrolling Marquee Banner -->
+        <section class="scrolling-banner">
+            <div class="banner-track">
+                <span class="banner-text">BOOKING NOW • PAMPER YOURSELF • POOJA'S SALON • NO. 1 LADIES SPECIALIST • BOOKING NOW • PAMPER YOURSELF • POOJA'S SALON • NO. 1 LADIES SPECIALIST •</span>
+                <span class="banner-text">BOOKING NOW • PAMPER YOURSELF • POOJA'S SALON • NO. 1 LADIES SPECIALIST • BOOKING NOW • PAMPER YOURSELF • POOJA'S SALON • NO. 1 LADIES SPECIALIST •</span>
+            </div>
+        </section>
+
+        <!-- Welcome Era grid -->
+        <section class="welcome-section">
+            <div class="welcome-instruments-grid">
+                <div class="instrument-card">
+                    <div class="instrument-icon"><i class="fa-solid fa-scissors"></i></div>
+                    <h4>Precise Cut</h4>
+                    <p>Designed to structure your face perfectly</p>
+                </div>
+                <div class="instrument-card">
+                    <div class="instrument-icon"><i class="fa-solid fa-wind"></i></div>
+                    <h4>Volumizing Blowdry</h4>
+                    <p>Get that red-carpet bounce instantly</p>
+                </div>
+                <div class="instrument-card">
+                    <div class="instrument-icon"><i class="fa-solid fa-palette"></i></div>
+                    <h4>Bespoke Color</h4>
+                    <p>Ammonia-free healthy shade blends</p>
+                </div>
+                <div class="instrument-card">
+                    <div class="instrument-icon"><i class="fa-solid fa-spa"></i></div>
+                    <h4>Facial & Spa</h4>
+                    <p>Calming and relaxing skin therapy</p>
+                </div>
+            </div>
+            <div class="welcome-content">
+                <h2>Welcome to Your <em class="serif-italic">New Hair</em> <em class="serif-italic">Era</em>.</h2>
+                <p>We're not just doing hair; we're building confidence. From seamless blends to high-impact color, every appointment is personalized to you. Think soft glam, trend-conscious, glossy extensions, and effortless styling that actually grows out beautifully.</p>
+                <button class="btn-pill-action" onclick="scrollToBooking()">Book Appointment <i class="fa-solid fa-heart"></i></button>
+            </div>
+        </section>
+
+        <!-- Editorial Banner Services Showcase -->
+        <section class="services-editorial-list">
+            <div class="service-banner-row">
+                <span class="service-banner-title">Haircut — <em class="serif-italic">45m</em></span>
+                <div class="service-banner-details">
+                    <span>wash + cut + blowdry</span>
+                    <span class="service-banner-price">$50</span>
+                </div>
+            </div>
+            <div class="service-banner-row">
+                <span class="service-banner-title">Hair Coloring — <em class="serif-italic">90m</em></span>
+                <div class="service-banner-details">
+                    <span>organic color blend</span>
+                    <span class="service-banner-price">$120</span>
+                </div>
+            </div>
+            <div class="service-banner-row">
+                <span class="service-banner-title">Threading — <em class="serif-italic">15m</em></span>
+                <div class="service-banner-details">
+                    <span>brows & upper lip shaping</span>
+                    <span class="service-banner-price">$15</span>
+                </div>
+            </div>
+            <div class="service-banner-row">
+                <span class="service-banner-title">Facial — <em class="serif-italic">60m</em></span>
+                <div class="service-banner-details">
+                    <span>herbal gold skin massage</span>
+                    <span class="service-banner-price">$80</span>
+                </div>
+            </div>
+            <div class="service-banner-row">
+                <span class="service-banner-title">Hair Spa — <em class="serif-italic">75m</em></span>
+                <div class="service-banner-details">
+                    <span>deep hydration treatment</span>
+                    <span class="service-banner-price">$70</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Section Panel -->
+        <section id="booking-panel" class="booking-section">
+            <div class="section-container">
+                <div class="section-title-center">
+                    <h2>Book Your Spot</h2>
+                    <p>Select your service, choose a date, and select an available slot.</p>
                 </div>
 
-                <!-- Right Column: Booking Form -->
-                <div class="form-card animate-fade-in">
-                    <h2>Book Your Slot</h2>
-                    <p class="form-subtitle">Please fill out the details below to secure your appointment</p>
-
+                <div class="booking-form-card">
                     <form id="booking-form" onsubmit="handleFormSubmit(event)">
-                        <!-- Service Selection -->
+                        <!-- Service Dropdown -->
                         <div class="form-group">
-                            <label for="service-select"><i class="fa-solid fa-circle-check"></i> Select Service</label>
-                            <div class="select-wrapper">
-                                <select id="service-select" required onchange="onServiceOrDateChange()">
-                                    <option value="" disabled selected>Choose a service...</option>
-                                    <option value="haircut">Haircut — 45 mins ($50)</option>
-                                    <option value="coloring">Hair Coloring — 90 mins ($120)</option>
-                                    <option value="threading">Threading (Eyebrows + Upper Lip) — 15 mins ($15)</option>
-                                    <option value="facial">Facial — 60 mins ($80)</option>
-                                    <option value="spa">Hair Spa — 75 mins ($70)</option>
-                                </select>
-                            </div>
+                            <label for="service-select">Select Service</label>
+                            <select id="service-select" required onchange="onServiceOrDateChange()">
+                                <option value="" disabled selected>Choose a service...</option>
+                                <option value="haircut">Haircut — 45 mins ($50)</option>
+                                <option value="coloring">Hair Coloring — 90 mins ($120)</option>
+                                <option value="threading">Threading (Eyebrows + Upper Lip) — 15 mins ($15)</option>
+                                <option value="facial">Facial — 60 mins ($80)</option>
+                                <option value="spa">Hair Spa — 75 mins ($70)</option>
+                            </select>
                         </div>
 
-                        <!-- Date Selection -->
+                        <!-- Date input -->
                         <div class="form-group">
-                            <label for="booking-date"><i class="fa-regular fa-calendar"></i> Select Date</label>
+                            <label for="booking-date">Select Date</label>
                             <input type="date" id="booking-date" required onchange="onServiceOrDateChange()">
                         </div>
 
-                        <!-- Time Slot Selection -->
+                        <!-- Time slots -->
                         <div class="form-group">
-                            <label><i class="fa-regular fa-clock"></i> Available Time Slots</label>
+                            <label>Available Time Slots</label>
                             <div id="slots-instruction" class="slots-info">
-                                <i class="fa-solid fa-info-circle"></i> Select a service and date to view available times.
+                                <i class="fa-solid fa-info-circle"></i> Please select a service and date to view available times.
                             </div>
-                            <div id="slots-container" class="slots-grid">
+                            <div id="slots-container" class="slots-grid" style="display: none;">
                                 <!-- Dynamically populated slots -->
                             </div>
                             <input type="hidden" id="selected-time" required>
                         </div>
 
-                        <!-- Customer Details -->
+                        <!-- Guest details -->
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="customer-name"><i class="fa-regular fa-user"></i> Your Name</label>
-                                <input type="text" id="customer-name" placeholder="Enter your full name" required minlength="2">
+                                <label for="customer-name">Your Name</label>
+                                <input type="text" id="customer-name" placeholder="Full Name" required minlength="2">
                             </div>
                             <div class="form-group">
-                                <label for="customer-phone"><i class="fa-solid fa-phone"></i> Phone Number</label>
-                                <input type="tel" id="customer-phone" placeholder="e.g., 9876543210" required pattern="[0-9\s\-+\(\)]{8,15}">
+                                <label for="customer-phone">Phone Number</label>
+                                <input type="tel" id="customer-phone" placeholder="Phone Number" required pattern="[0-9\s\-+\(\)]{8,15}">
                             </div>
                         </div>
 
                         <!-- Submit Button -->
                         <button type="submit" class="btn-submit">
-                            <span>Confirm & Book Appointment</span> <i class="fa-solid fa-arrow-right"></i>
+                            Confirm & Book Appointment <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </form>
                 </div>
             </div>
         </section>
 
-        <!-- DASHBOARD SECTION -->
-        <section id="section-dashboard" class="content-section">
-            <div class="dashboard-container animate-fade-in">
-                <!-- Dashboard Header -->
-                <div class="dashboard-header">
-                    <div>
-                        <h2>Owner's Dashboard</h2>
-                        <p class="text-muted">Manage appointments and view daily schedules</p>
-                    </div>
-                    <div class="dashboard-filter">
-                        <label for="dashboard-date"><i class="fa-regular fa-calendar-days"></i> View Schedule For:</label>
-                        <input type="date" id="dashboard-date" onchange="renderDashboard()">
-                    </div>
-                </div>
-
-                <!-- Metrics / Stats Cards -->
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-icon pink-bg"><i class="fa-regular fa-calendar-check"></i></div>
-                        <div class="metric-info">
-                            <h3 id="stat-total-bookings">0</h3>
-                            <p>Total Appointments</p>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon gold-bg"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-                        <div class="metric-info">
-                            <h3 id="stat-total-revenue">$0</h3>
-                            <p>Estimated Revenue</p>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon blue-bg"><i class="fa-solid fa-hourglass-half"></i></div>
-                        <div class="metric-info">
-                            <h3 id="stat-total-hours">0h</h3>
-                            <p>Total Service Time</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Appointments List -->
-                <div class="table-card">
-                    <div class="table-header">
-                        <h3>Appointments List</h3>
-                        <span class="badge" id="dashboard-date-badge">Today</span>
-                    </div>
-                    <div class="table-wrapper">
-                        <table class="appointments-table">
-                            <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Customer Name</th>
-                                    <th>Phone Number</th>
-                                    <th>Service</th>
-                                    <th>Duration</th>
-                                    <th>Price</th>
-                                    <th style="text-align: right;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="appointments-tbody">
-                                <!-- Dynamically populated rows -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- Empty State -->
-                    <div id="dashboard-empty" class="empty-state">
-                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f8c3cd' width='48' height='48'><path d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z'/></svg>" alt="Calendar Icon">
-                        <h4>No Appointments Scheduled</h4>
-                        <p>There are no bookings for the selected day yet.</p>
-                    </div>
-                </div>
+        <!-- About Owner Section -->
+        <section class="owner-section">
+            <div class="owner-content">
+                <h2>Hey Girl, <em class="serif-italic">I'm Pooja</em></h2>
+                <p>I started this salon because I believe good hair changes everything. My goal? To create glossy, healthy, confidence-boosting hair that feels like you — just elevated. Every appointment is personal, relaxed, and all about making you feel your best.</p>
+                <p>Drop by our district studio or secure your spot online today. We look forward to meeting you!</p>
+            </div>
+            <div class="owner-image-container">
+                <img src="owner_profile.png" alt="Pooja - Salon Owner" class="owner-img">
             </div>
         </section>
     </main>
 
-    <!-- CONFIRMATION MODAL -->
+    <!-- OWNER'S DASHBOARD PANEL -->
+    <main id="section-dashboard" class="dashboard-section">
+        <div class="dashboard-header">
+            <div>
+                <h2>Owner's Dashboard</h2>
+                <p class="text-muted">Manage appointments and view daily schedules</p>
+            </div>
+            <div class="dashboard-filter">
+                <label for="dashboard-date" style="font-size: 0.9rem; font-weight: 500; text-transform: uppercase;">Select Day:</label>
+                <input type="date" id="dashboard-date" onchange="renderDashboard()">
+            </div>
+        </div>
+
+        <!-- Metric Stat Widgets -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-regular fa-calendar-check"></i></div>
+                <div class="metric-info">
+                    <h3 id="stat-total-bookings">0</h3>
+                    <p>Total Appointments</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <div class="metric-info">
+                    <h3 id="stat-total-revenue">$0</h3>
+                    <p>Estimated Revenue</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                <div class="metric-info">
+                    <h3 id="stat-total-hours">0h</h3>
+                    <p>Total Service Time</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Grid -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3 style="font-family: var(--font-sans); font-size: 1rem; font-weight: 600;">Appointments List</h3>
+                <span class="badge" id="dashboard-date-badge">Today</span>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Customer Name</th>
+                            <th>Phone Number</th>
+                            <th>Service</th>
+                            <th>Duration</th>
+                            <th>Price</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointments-tbody">
+                        <!-- Dynamically populated rows -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Empty State placeholder -->
+            <div id="dashboard-empty" class="empty-state">
+                <h4 style="font-family: var(--font-sans); font-size: 1.1rem; font-weight: 600;">No Bookings Found</h4>
+                <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 4px;">There are no appointments scheduled for this date.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- SUCCESS CONFIRMATION MODAL -->
     <div id="success-modal" class="modal-overlay">
-        <div class="modal-card animate-scale-up">
+        <div class="modal-card">
             <div class="modal-success-icon">
                 <i class="fa-solid fa-check"></i>
             </div>
             <h2>Booking Confirmed!</h2>
-            <p class="modal-subtitle">Thank you for choosing Pooja's Salon. Your slot has been secured.</p>
+            <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 4px;">Your slot has been secured. Thank you for choosing Pooja's Salon.</p>
             
             <div class="modal-details-card">
                 <div class="detail-row">
@@ -260,24 +299,31 @@
                 </div>
             </div>
 
-            <div class="modal-actions">
-                <button class="btn-primary" onclick="closeModal()">Done</button>
-            </div>
+            <button class="btn-primary" onclick="closeModal()">Done</button>
         </div>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <p>&copy; 2026 Pooja's Salon. All rights reserved.</p>
-            <p class="footer-links">
+            <p>&copy; 2026 Pooja's Salon. Elegant Ladies' Hair & Beauty Studio.</p>
+            <div class="footer-links">
                 <span><i class="fa-solid fa-location-dot"></i> 123 Beauty Lane, Rose District</span>
-                <span>•</span>
                 <span><i class="fa-solid fa-phone"></i> +1 (555) 019-2834</span>
-            </p>
+            </div>
         </div>
     </footer>
 
+    <!-- JS Helper Function for Scrolling -->
+    <script>
+        function scrollToBooking() {
+            switchTab('book');
+            const bookingPanel = document.getElementById('booking-panel');
+            if (bookingPanel) {
+                bookingPanel.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
     <!-- Main App Script -->
     <script src="app.js"></script>
 </body>

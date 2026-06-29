@@ -401,11 +401,11 @@ function showConfirmationModal(booking) {
     document.getElementById('confirm-time').textContent = `${timeStr} - ${endTimeStr}`;
     document.getElementById('confirm-duration').textContent = `${booking.duration} minutes`;
 
-    document.getElementById('success-modal').classList.add('active');
+    document.getElementById('success-modal').classList.add('visible');
 }
 
 function closeModal() {
-    document.getElementById('success-modal').classList.remove('active');
+    document.getElementById('success-modal').classList.remove('visible');
 }
 
 // ==========================================

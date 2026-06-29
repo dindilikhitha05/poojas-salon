@@ -85,19 +85,25 @@ async function loadBookings() {
 // ==========================================
 // Navigate to a section inside the book view (show it if hidden, then scroll)
 function navTo(sectionId) {
-    // Make sure the main book section is visible
+    const NAV_HEIGHT = 72; // sticky navbar height in px
+
+    // 1. Make sure the main book section is visible first
+    const sectionBook = document.getElementById('section-book');
+    const sectionDash = document.getElementById('section-dashboard');
+    sectionBook.classList.add('active');
+    sectionDash.classList.remove('active');
     document.getElementById('tab-book').classList.add('active');
     document.getElementById('tab-dashboard').classList.remove('active');
-    document.getElementById('section-book').classList.add('active');
-    document.getElementById('section-dashboard').classList.remove('active');
 
-    // After display:block applies, scroll to target section
-    setTimeout(() => {
-        const target = document.getElementById(sectionId);
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }, 60);
+    // 2. Scroll to the target after a frame so display:block has rendered
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const target = document.getElementById(sectionId);
+            if (!target) return;
+            const top = target.getBoundingClientRect().top + window.scrollY - NAV_HEIGHT;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+        });
+    });
 }
 
 function switchTab(tabId) {

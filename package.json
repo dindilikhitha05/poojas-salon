@@ -1,0 +1,22 @@
+{
+  "name": "poojas-salon-root",
+  "version": "1.0.0",
+  "description": "Root package.json for Pooja's Salon Booking Web App to enable seamless hosting on platform root directories",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "install-backend": "cd backend && npm install",
+    "build": "cd backend && npm install"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.3.1",
+    "morgan": "^1.10.0"
+  }
+}

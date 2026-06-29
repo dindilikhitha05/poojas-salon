@@ -3,7 +3,7 @@
 // ==========================================
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5000'
-  : 'https://poojas-salon-backend-v0pe.onrender.com'; // Render URL will be updated after creation
+  : ''; // Relative routing for combined Vercel deployment
 
 const SERVICES = {
     haircut: { name: 'Haircut', duration: 45, price: 50 },

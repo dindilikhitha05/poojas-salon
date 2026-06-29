@@ -82,10 +82,14 @@ app.use('*', (req, res) => {
 // ==========================================
 // START SERVER
 // ==========================================
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running in mode on port ${PORT}`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running in mode on port ${PORT}`);
+  });
+}
+
+module.exports = app;
 
 // Helper Function: Seed demo data if database is empty
 async function seedDataIfNeeded() {

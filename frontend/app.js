@@ -83,6 +83,23 @@ async function loadBookings() {
 // ==========================================
 // TAB NAVIGATION
 // ==========================================
+// Navigate to a section inside the book view (show it if hidden, then scroll)
+function navTo(sectionId) {
+    // Make sure the main book section is visible
+    document.getElementById('tab-book').classList.add('active');
+    document.getElementById('tab-dashboard').classList.remove('active');
+    document.getElementById('section-book').classList.add('active');
+    document.getElementById('section-dashboard').classList.remove('active');
+
+    // After display:block applies, scroll to target section
+    setTimeout(() => {
+        const target = document.getElementById(sectionId);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 60);
+}
+
 function switchTab(tabId) {
     // Toggle Active Tab Buttons
     document.getElementById('tab-book').classList.toggle('active', tabId === 'book');

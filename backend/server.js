@@ -6,8 +6,10 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 
-// Load environment variables
-dotenv.config();
+const path = require('path');
+
+// Load environment variables from backend/.env (works regardless of working directory)
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const connectDB = require('./config/db');
 const bookingsRoutes = require('./routes/bookings');
@@ -31,9 +33,8 @@ connectDB().then(() => {
 app.use(helmet());
 
 // CORS Configuration
-const allowedOrigin = process.env.CLIENT_URL || '*';
 app.use(cors({
-  origin: allowedOrigin,
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -60,6 +61,12 @@ app.use(compression());
 // Body Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ==========================================
+// STATIC FILE SERVING (Frontend)
+// ==========================================
+const frontendPath = path.resolve(__dirname, '..', 'frontend');
+app.use(express.static(frontendPath));
 
 // ==========================================
 // ROUTES

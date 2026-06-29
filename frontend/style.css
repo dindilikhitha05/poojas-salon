@@ -148,7 +148,14 @@ img { display: block; max-width: 100%; }
 /* ==========================================
    SECTION SCROLL OFFSET
    ========================================== */
-#section-book, #section-dashboard { scroll-margin-top: 68px; }
+#section-book,
+#section-dashboard,
+#hero-section,
+#services-section,
+#about-section,
+#booking-panel {
+    scroll-margin-top: 72px;
+}
 
 /* ==========================================
    HERO SECTION

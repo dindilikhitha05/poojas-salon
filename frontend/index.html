@@ -31,12 +31,12 @@
 
             <!-- Nav -->
             <nav class="nav-links">
-                <span id="tab-book" class="nav-item active" onclick="switchTab('book')">Home</span>
-                <a href="#services-section" class="nav-item" onclick="switchTab('book')">Services</a>
-                <a href="#about-section" class="nav-item" onclick="switchTab('book')">About Us</a>
+                <span id="tab-book" class="nav-item active" onclick="navTo('hero-section')">Home</span>
+                <span class="nav-item" onclick="navTo('services-section')">Services</span>
+                <span class="nav-item" onclick="navTo('about-section')">About Us</span>
                 <span id="tab-dashboard" class="nav-item" onclick="switchTab('dashboard')">Dashboard</span>
-                <a href="#booking-panel" class="nav-item" onclick="switchTab('book')">Prices</a>
-                <button class="btn-book-nav" onclick="switchTab('book'); setTimeout(()=>document.getElementById('booking-panel').scrollIntoView({behavior:'smooth'}), 80)">
+                <span class="nav-item" onclick="navTo('booking-panel')">Prices</span>
+                <button class="btn-book-nav" onclick="navTo('booking-panel')">
                     <i class="fa-regular fa-calendar-check"></i> Book Appointment
                 </button>
             </nav>
@@ -49,7 +49,7 @@
     <main id="section-book" class="content-section active">
 
         <!-- HERO -->
-        <section class="hero-section">
+        <section id="hero-section" class="hero-section">
             <!-- Decorative blob BG -->
             <div class="hero-bg-blob"></div>
 

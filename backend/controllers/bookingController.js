@@ -61,7 +61,17 @@ const getBookingsByDate = async (req, res, next) => {
       });
     }
 
-    const bookings = await Booking.find({ date }).sort({ startMinutes: 1 });
+    let bookings = await Booking.find({ date }).sort({ startMinutes: 1 });
+
+    // Mask customer details for public checks, only show for owner
+    if (!req.isOwner) {
+      bookings = bookings.map(b => {
+        const obj = b.toObject();
+        obj.customerName = 'Reserved';
+        obj.customerPhone = 'Reserved';
+        return obj;
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -71,6 +81,7 @@ const getBookingsByDate = async (req, res, next) => {
     next(error);
   }
 };
+
 
 // POST /api/bookings - Create booking with overlap conflict detection (409)
 const createBooking = async (req, res, next) => {

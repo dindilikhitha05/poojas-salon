@@ -67,7 +67,18 @@ function formatDateLocal(date) {
 // ==========================================
 async function loadBookings() {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/bookings`);
+        const password = sessionStorage.getItem('ownerPassword') || '';
+        const response = await fetch(`${API_BASE_URL}/api/bookings`, {
+            headers: {
+                'Authorization': `Bearer ${password}`
+            }
+        });
+        if (response.status === 401) {
+            sessionStorage.removeItem('ownerPassword');
+            alert('Incorrect Owner Password. Access Denied.');
+            switchTab('book');
+            return;
+        }
         const result = await response.json();
         if (result.success) {
             bookings = result.data || [];
@@ -107,6 +118,22 @@ function navTo(sectionId) {
 }
 
 function switchTab(tabId) {
+    if (tabId === 'dashboard') {
+        const savedPassword = sessionStorage.getItem('ownerPassword');
+        if (!savedPassword) {
+            const password = prompt('Enter Owner Password:');
+            if (password === null) {
+                // User cancelled, keep them on current tab
+                return;
+            }
+            if (!password.trim()) {
+                alert('Password cannot be empty.');
+                return;
+            }
+            sessionStorage.setItem('ownerPassword', password);
+        }
+    }
+
     // Toggle Active Tab Buttons
     document.getElementById('tab-book').classList.toggle('active', tabId === 'book');
     document.getElementById('tab-dashboard').classList.toggle('active', tabId === 'dashboard');
@@ -173,7 +200,12 @@ async function onServiceOrDateChange() {
     // Fetch existing bookings for this date from the database
     let dayBookings = [];
     try {
-        const response = await fetch(`${API_BASE_URL}/api/bookings/date/${date}`);
+        const password = sessionStorage.getItem('ownerPassword') || '';
+        const headers = {};
+        if (password) {
+            headers['Authorization'] = `Bearer ${password}`;
+        }
+        const response = await fetch(`${API_BASE_URL}/api/bookings/date/${date}`, { headers });
         const result = await response.json();
         if (result.success) {
             dayBookings = result.data || [];
@@ -405,7 +437,18 @@ async function renderDashboard() {
     // Fetch daily bookings from the backend
     let dayBookings = [];
     try {
-        const response = await fetch(`${API_BASE_URL}/api/bookings/date/${filterDate}`);
+        const password = sessionStorage.getItem('ownerPassword') || '';
+        const response = await fetch(`${API_BASE_URL}/api/bookings/date/${filterDate}`, {
+            headers: {
+                'Authorization': `Bearer ${password}`
+            }
+        });
+        if (response.status === 401) {
+            sessionStorage.removeItem('ownerPassword');
+            alert('Incorrect Owner Password. Access Denied.');
+            switchTab('book');
+            return;
+        }
         const result = await response.json();
         if (result.success) {
             dayBookings = result.data || [];
@@ -480,9 +523,19 @@ async function cancelAppointment(id) {
     const confirmCancel = confirm(`Are you sure you want to cancel the appointment for ${name}?`);
     if (confirmCancel) {
         try {
+            const password = sessionStorage.getItem('ownerPassword') || '';
             const response = await fetch(`${API_BASE_URL}/api/bookings/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${password}`
+                }
             });
+            if (response.status === 401) {
+                sessionStorage.removeItem('ownerPassword');
+                alert('Session expired or incorrect password. Access Denied.');
+                switchTab('book');
+                return;
+            }
             const result = await response.json();
             if (result.success) {
                 await loadBookings();

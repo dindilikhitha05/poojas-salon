@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { validateBooking } = require('../middleware/validation');
+const { requireAuth, checkAuthOptional } = require('../middleware/auth');
 const {
   getAllBookings,
   getBookingsByDate,
@@ -11,15 +12,16 @@ const {
 } = require('../controllers/bookingController');
 
 // Stats endpoints (must come before /:id and /date/:date to avoid router confusion)
-router.get('/stats/dashboard', getStatsDashboard);
-router.get('/stats/revenue', getStatsRevenue);
+router.get('/stats/dashboard', requireAuth, getStatsDashboard);
+router.get('/stats/revenue', requireAuth, getStatsRevenue);
 
-// Date specific route
-router.get('/date/:date', getBookingsByDate);
+// Date specific route - optional auth to check if we need to mask personal data
+router.get('/date/:date', checkAuthOptional, getBookingsByDate);
 
 // General CRUD
-router.get('/', getAllBookings);
+router.get('/', requireAuth, getAllBookings);
 router.post('/', validateBooking, createBooking);
-router.delete('/:id', deleteBooking);
+router.delete('/:id', requireAuth, deleteBooking);
 
 module.exports = router;
+

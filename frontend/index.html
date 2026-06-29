@@ -50,17 +50,26 @@
                 </div>
             </div>
 
+            <!-- Hamburger (mobile only) -->
+            <button class="hamburger" id="hamburger-btn" aria-label="Open menu" onclick="toggleMobileNav()">
+                <span></span><span></span><span></span>
+            </button>
+
             <!-- Nav -->
-            <nav class="nav-links">
-                <span id="tab-book" class="nav-item active" onclick="navTo('hero-section')">Home</span>
-                <span class="nav-item" onclick="navTo('services-section')">Services</span>
-                <span class="nav-item" onclick="navTo('about-section')">About Us</span>
-                <span id="tab-dashboard" class="nav-item" onclick="switchTab('dashboard')">Dashboard</span>
-                <span class="nav-item" onclick="navTo('booking-panel')">Prices</span>
-                <button class="btn-book-nav" onclick="navTo('booking-panel')">
+            <nav class="nav-links" id="main-nav">
+                <button class="nav-close-btn" onclick="toggleMobileNav()" aria-label="Close menu">&times;</button>
+                <span id="tab-book" class="nav-item active" onclick="navTo('hero-section'); closeMobileNav()">Home</span>
+                <span class="nav-item" onclick="navTo('services-section'); closeMobileNav()">Services</span>
+                <span class="nav-item" onclick="navTo('about-section'); closeMobileNav()">About Us</span>
+                <span id="tab-dashboard" class="nav-item" onclick="switchTab('dashboard'); closeMobileNav()">Dashboard</span>
+                <span class="nav-item" onclick="navTo('booking-panel'); closeMobileNav()">Prices</span>
+                <button class="btn-book-nav" onclick="navTo('booking-panel'); closeMobileNav()">
                     <i class="fa-regular fa-calendar-check"></i> Book Appointment
                 </button>
             </nav>
+
+            <!-- Mobile nav overlay backdrop -->
+            <div class="nav-overlay" id="nav-overlay" onclick="closeMobileNav()"></div>
 
         </div>
     </header>
@@ -453,6 +462,23 @@
 
     <!-- ========== SCRIPTS ========== -->
     <script src="app.js"></script>
+    <script>
+        function toggleMobileNav() {
+            const nav = document.getElementById('main-nav');
+            const overlay = document.getElementById('nav-overlay');
+            const btn = document.getElementById('hamburger-btn');
+            nav.classList.toggle('open');
+            overlay.classList.toggle('open');
+            btn.classList.toggle('open');
+            document.body.classList.toggle('nav-open');
+        }
+        function closeMobileNav() {
+            document.getElementById('main-nav').classList.remove('open');
+            document.getElementById('nav-overlay').classList.remove('open');
+            document.getElementById('hamburger-btn').classList.remove('open');
+            document.body.classList.remove('nav-open');
+        }
+    </script>
 
 </body>
 </html>

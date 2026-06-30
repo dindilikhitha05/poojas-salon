@@ -13,10 +13,11 @@ const SERVICES = {
     spa: { name: 'Hair Spa', duration: 75, price: 70 }
 };
 
-// Operating Hours: 9:00 AM to 7:00 PM
-const START_MINUTES = 9 * 60; // 540 minutes
-const END_MINUTES = 19 * 60;  // 1140 minutes
-const SLOT_INTERVAL = 30;     // 30 minutes
+// Operating Hours: 11:00 AM to 8:00 PM (Monday closed)
+const START_MINUTES = 11 * 60; // 660 minutes
+const END_MINUTES   = 20 * 60; // 1200 minutes
+const SLOT_INTERVAL = 30;      // 30 minutes
+const CLOSED_DAYS   = [1];     // 1 = Monday (0=Sun, 1=Mon, ... 6=Sat)
 
 // In-memory Bookings Array (fetched from database)
 let bookings = [];
@@ -191,6 +192,17 @@ async function onServiceOrDateChange() {
         return;
     }
 
+    // --- Monday closed check ---
+    // Parse YYYY-MM-DD parts directly to avoid timezone-shift issues
+    const [year, month, day] = date.split('-').map(Number);
+    const selectedDayOfWeek = new Date(year, month - 1, day).getDay(); // 0=Sun,1=Mon,...
+    if (CLOSED_DAYS.includes(selectedDayOfWeek)) {
+        slotsContainer.style.display = 'none';
+        slotsInstruction.style.display = 'flex';
+        slotsInstruction.innerHTML = '<i class="fa-solid fa-store-slash"></i> We\'re closed on Mondays — please pick another day.';
+        return;
+    }
+
     const service = SERVICES[serviceId];
     const duration = service.duration;
 
@@ -232,7 +244,7 @@ async function onServiceOrDateChange() {
         let isAvailable = true;
         let reason = '';
 
-        // 1. Check if the service exceeds salon closing time
+        // 1. Check if the service would run past 8:00 PM closing time
         if (slotEnd > END_MINUTES) {
             isAvailable = false;
             reason = 'exceeds-hours';
@@ -286,7 +298,7 @@ async function onServiceOrDateChange() {
         if (!slot.isAvailable) {
             btn.disabled = true;
             btn.title = slot.reason === 'exceeds-hours' 
-                ? 'Not enough time before closing' 
+                ? 'Not enough time before 8:00 PM closing' 
                 : (slot.reason === 'past' ? 'This slot has passed' : 'This slot is already booked');
         } else {
             btn.addEventListener('click', () => selectSlot(btn, slot.minutes));
@@ -334,9 +346,32 @@ async function handleFormSubmit(event) {
     const date = document.getElementById('booking-date').value;
     const customerName = document.getElementById('customer-name').value.trim();
     const customerPhone = document.getElementById('customer-phone').value.trim();
+    const phoneField = document.getElementById('customer-phone');
     
+    // Clear previous inline phone error
+    let phoneError = document.getElementById('phone-error-msg');
+    if (phoneError) phoneError.remove();
+
     if (!serviceId || !date || selectedSlotMinutes === null || !customerName || !customerPhone) {
         alert('Please complete all form fields and select an available time slot.');
+        return;
+    }
+
+    // --- Inline phone validation: exactly 10 digits ---
+    if (!/^[0-9]{10}$/.test(customerPhone)) {
+        phoneError = document.createElement('p');
+        phoneError.id = 'phone-error-msg';
+        phoneError.style.cssText = 'color:#d4006a; font-size:0.78rem; margin-top:4px; font-weight:500;';
+        phoneError.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Please enter a valid 10-digit phone number.';
+        phoneField.parentElement.appendChild(phoneError);
+        phoneField.focus();
+        return;
+    }
+
+    // --- Monday check (extra safety on frontend) ---
+    const [year, month, day] = date.split('-').map(Number);
+    if (new Date(year, month - 1, day).getDay() === 1) {
+        alert("We're closed on Mondays — please pick another day.");
         return;
     }
 

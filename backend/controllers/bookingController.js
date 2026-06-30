@@ -97,9 +97,43 @@ const createBooking = async (req, res, next) => {
       price
     } = req.body;
 
-    const endMinutes = startMinutes + duration;
+    const SALON_START = 11 * 60; // 660  — 11:00 AM
+    const SALON_END   = 20 * 60; // 1200 — 8:00 PM
 
-    // 1. Double check overlap conflict in MongoDB
+    // 1. Reject Mondays (closed day)
+    const [year, month, day] = date.split('-').map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    if (dateObj.getDay() === 1) {
+      return res.status(400).json({
+        success: false,
+        message: "We're closed on Mondays — please pick another day"
+      });
+    }
+
+    // 2. Reject bookings outside business hours (11:00 AM – 8:00 PM)
+    const endMinutes = startMinutes + duration;
+    if (startMinutes < SALON_START || startMinutes >= SALON_END) {
+      return res.status(400).json({
+        success: false,
+        message: 'Booking must start between 11:00 AM and 8:00 PM'
+      });
+    }
+    if (endMinutes > SALON_END) {
+      return res.status(400).json({
+        success: false,
+        message: 'This service would run past our 8:00 PM closing time. Please choose an earlier slot'
+      });
+    }
+
+    // 3. Reject invalid phone (exactly 10 digits)
+    if (!/^[0-9]{10}$/.test(customerPhone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid 10-digit phone number'
+      });
+    }
+
+    // 4. Double check overlap conflict in MongoDB
     // Overlap formula: start_new < end_existing AND start_existing < end_new
     const overlappingBooking = await Booking.findOne({
       date,
@@ -114,7 +148,7 @@ const createBooking = async (req, res, next) => {
       });
     }
 
-    // 2. Insert booking
+    // 5. Insert booking
     const booking = new Booking({
       customerId: req.user ? req.user.id : null,
       customerName,
@@ -138,6 +172,7 @@ const createBooking = async (req, res, next) => {
     next(error);
   }
 };
+
 
 // DELETE /api/bookings/:id - Delete booking
 const deleteBooking = async (req, res, next) => {

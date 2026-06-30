@@ -243,7 +243,10 @@
                             </div>
                             <div class="form-group">
                                 <label for="customer-phone">Phone Number</label>
-                                <input type="tel" id="customer-phone" placeholder="e.g. +1 555 0192834" required pattern="[0-9\s\-+\(\)]{8,15}">
+                                <input type="tel" id="customer-phone" placeholder="10-digit number" required
+                                    pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+                                    title="Enter exactly 10 digits">
                             </div>
                         </div>
 
@@ -444,7 +447,10 @@
                 <form id="auth-login-form" onsubmit="handleLoginSubmit(event)">
                     <div class="form-group" style="text-align:left;">
                         <label for="login-phone">Phone Number</label>
-                        <input type="tel" id="login-phone" placeholder="e.g. 9876543210" required>
+                        <input type="tel" id="login-phone" placeholder="10-digit number" required
+                            pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric"
+                            oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+                            title="Enter exactly 10 digits">
                     </div>
                     <div class="form-group" style="text-align:left; margin-bottom:24px;">
                         <label for="login-password">Password</label>
@@ -468,7 +474,10 @@
                     </div>
                     <div class="form-group" style="text-align:left;">
                         <label for="register-phone">Phone Number</label>
-                        <input type="tel" id="register-phone" placeholder="e.g. 9876543210" required>
+                        <input type="tel" id="register-phone" placeholder="10-digit number" required
+                            pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric"
+                            oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+                            title="Enter exactly 10 digits">
                     </div>
                     <div class="form-group" style="text-align:left; margin-bottom:24px;">
                         <label for="register-password">Password</label>

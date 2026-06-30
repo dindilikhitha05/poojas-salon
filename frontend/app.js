@@ -724,16 +724,16 @@ async function handleRegisterSubmit(event) {
 
 function updateBookingFormPrefills() {
     if (currentUser && currentUser.role === 'customer') {
+        // Pre-fill from account but keep editable so user can use a different name/phone for the booking
         document.getElementById('customer-name').value = currentUser.name;
         document.getElementById('customer-phone').value = currentUser.phone;
-        document.getElementById('customer-name').readOnly = true;
-        document.getElementById('customer-phone').readOnly = true;
     } else {
         document.getElementById('customer-name').value = '';
         document.getElementById('customer-phone').value = '';
-        document.getElementById('customer-name').readOnly = false;
-        document.getElementById('customer-phone').readOnly = false;
     }
+    // Always editable — user may want to book for someone else or use a different number
+    document.getElementById('customer-name').readOnly = false;
+    document.getElementById('customer-phone').readOnly = false;
 }
 
 async function loadMyBookings() {

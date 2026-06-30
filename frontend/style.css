@@ -97,8 +97,8 @@ img {
 }
 
 .logo-img {
-    width: 300px;
-    height: 00px;
+    height: 40px;
+    width: auto;
     object-fit: contain;
     flex-shrink: 0;
 }
